@@ -1,3 +1,83 @@
+/* Match vanioantunes.com.
+   Values copied from site.css :root, so the tool reads as part of the site
+   rather than as a stray Jupyter install. JupyterLab is themed through its own
+   --jp-* variables; setting those is supported and survives upgrades, whereas
+   styling its internal class names would not. */
+
+/* Declared on body, not :root. JupyterLab's own light theme sets these same
+   --jp-* variables on :root, and which of the two wins would come down to
+   stylesheet load order. Custom properties inherit, so defining them one level
+   down on body beats :root for everything inside it, whatever the order. */
+body {
+  --oh-bg: #f7f8fa;
+  --oh-surface: #ffffff;
+  --oh-border: #c9d0d9;
+  --oh-rule: #e4e8ee;
+  --oh-accent: #1d5fb8;
+  --oh-accent-dark: #164a90;
+  --oh-accent-soft: #e8f0fb;
+  --oh-text: #1c2430;
+  --oh-muted: #4a5465;
+  --oh-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Typography */
+  --jp-ui-font-family: var(--oh-font);
+  --jp-content-font-family: var(--oh-font);
+
+  /* Surfaces: layout-color0 is the page behind the notebook, 1 is the paper. */
+  --jp-layout-color0: var(--oh-bg);
+  --jp-layout-color1: var(--oh-surface);
+  --jp-layout-color2: var(--oh-bg);
+  --jp-layout-color3: var(--oh-rule);
+
+  /* Text */
+  --jp-ui-font-color0: var(--oh-text);
+  --jp-ui-font-color1: var(--oh-text);
+  --jp-ui-font-color2: var(--oh-muted);
+  --jp-content-font-color0: var(--oh-text);
+  --jp-content-font-color1: var(--oh-text);
+
+  /* Lines */
+  --jp-border-color0: var(--oh-border);
+  --jp-border-color1: var(--oh-border);
+  --jp-border-color2: var(--oh-rule);
+  --jp-border-color3: var(--oh-rule);
+
+  /* The accent drives buttons, the selected-cell bar and focus rings.
+     #1d5fb8 on white is about 5.3:1, which clears WCAG 2.2 AA for text. */
+  --jp-brand-color0: var(--oh-accent-dark);
+  --jp-brand-color1: var(--oh-accent);
+  --jp-brand-color2: #4b82cb;
+  --jp-brand-color3: var(--oh-accent-soft);
+  --jp-cell-editor-active-border: var(--oh-accent);
+}
+
+/* JupyterLab ships its toolbar icon buttons at 21x21. WCAG 2.2 AA 2.5.8 asks
+   for 24x24, so they are raised to the floor. The icon itself is untouched;
+   only the hit area grows. */
+.jp-ToolbarButtonComponent,
+.jp-Toolbar button,
+.jp-Toolbar jp-button {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Keyboard focus must stay visible: WCAG 2.2 AA, and the default ring is easy
+   to lose against the lighter surfaces set above. */
+.jp-Notebook *:focus-visible,
+.jp-Toolbar *:focus-visible {
+  outline: 2px solid var(--oh-accent);
+  outline-offset: 2px;
+}
+
+/* These two buttons are the point of the page, so they read as actions rather
+   than as two more icons in the row. */
+.oh-open-m,
+.oh-save-m {
+  font-weight: 600;
+  color: var(--oh-accent-dark);
+}
+
 /* The conversion report shown after Save .m */
 
 .oh-report {

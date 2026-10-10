@@ -8,7 +8,8 @@
     "bootstrap": "bash scripts/bootstrap.sh",
     "build": "bash scripts/build.sh",
     "smoke": "node scripts/smoke.mjs",
-    "smoke:extension": "node scripts/smoke-extension.mjs"
+    "smoke:extension": "node scripts/smoke-extension.mjs",
+    "shots": "node scripts/shots.mjs"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {

@@ -61,6 +61,19 @@ bash scripts/build.sh       # writes _site/
 points JupyterLite at it. Both the toolchain and `_site/` are gitignored, so the
 site is built in CI rather than committed.
 
+## Known limitations
+
+`title()` does not draw. The plotly toolkit is the only graphics toolkit in the
+WebAssembly build, and it does not map the axes title into the figure.
+`xlabel()` and `ylabel()` do render, as do the curve, axes and ticks, so this is
+one missing property rather than a broken graphics path. Until it is fixed
+upstream, put the heading in a markdown cell above the plot.
+
+Octave's `input()` and other prompts that read from stdin need
+`SharedArrayBuffer`, which needs the `Cross-Origin-Opener-Policy` and
+`Cross-Origin-Embedder-Policy` headers. They are not set, so treat scripts as
+non-interactive.
+
 ## Weight
 
 The page and editor load on their own. Octave itself is roughly 90MB of
