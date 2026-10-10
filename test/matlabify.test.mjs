@@ -109,6 +109,22 @@ test('cells become %% sections in document order', () => {
   assert.ok(lines.indexOf('A = [1 2; 3 4];') < lines.indexOf('disp(A * A)'));
 });
 
+test('a markdown heading is not printed twice', () => {
+  const { code } = cellsToScript([{ type: 'markdown', source: '# Setup\nWhy this matters' }]);
+  const lines = code.split('\n').filter(Boolean);
+  assert.equal(lines[0], '%% Setup');
+  assert.ok(!lines.includes('% # Setup'), 'heading should not repeat in the body');
+  assert.ok(lines.includes('% Why this matters'));
+});
+
+test('markdown without a heading keeps its first line', () => {
+  const { code } = cellsToScript([{ type: 'markdown', source: 'Plain prose here\nand more' }]);
+  const lines = code.split('\n').filter(Boolean);
+  assert.equal(lines[0], '%% Plain prose here');
+  assert.ok(lines.includes('% Plain prose here'), 'no heading marker means nothing was consumed');
+  assert.ok(lines.includes('% and more'));
+});
+
 test('empty cells are dropped', () => {
   const { code } = cellsToScript([
     { type: 'code', source: 'x = 1;' },

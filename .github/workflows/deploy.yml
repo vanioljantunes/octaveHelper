@@ -31,6 +31,17 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    # Lifted to the job so the publish steps can test for them: until the R2
+    # bucket and Vercel project exist, those steps skip rather than fail, and
+    # the build itself still runs on every push.
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -58,17 +69,21 @@ jobs:
           find _site -type f | wc -l
 
       - name: Upload the kernel to R2
-        env:
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        if: env.R2_ACCOUNT_ID != '' && env.R2_BUCKET != ''
         run: bash scripts/upload-r2.sh _site
+
+      - name: Say why publishing was skipped
+        if: env.R2_ACCOUNT_ID == '' || env.R2_BUCKET == ''
+        run: |
+          echo "::notice::R2 secrets are not set, so nothing was published."
+          echo "Set R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY,"
+          echo "and replace KERNEL_CDN_HOST in vercel.json, to deploy."
 
       # Whatever R2 now serves is removed from the Vercel upload, and the
       # redirects in vercel.json point at it. This is what keeps the
       # deployment under the 100MB Hobby cap.
       - name: Drop the redirected assets from the deploy
+        if: env.R2_ACCOUNT_ID != '' && env.VERCEL_TOKEN != ''
         run: |
           rm -rf _site/xeus/octave/kernel_packages
           find _site/xeus/octave/bin -name '*.wasm' -delete 2>/dev/null || true
@@ -80,8 +95,5 @@ jobs:
           fi
 
       - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        if: env.VERCEL_TOKEN != '' && env.VERCEL_PROJECT_ID != ''
         run: npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"

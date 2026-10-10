@@ -315,8 +315,13 @@ export function cellsToScript(cells, meta = {}) {
     const body = cell.source.replace(/\s+$/, '');
     if (!body) return;
     if (cell.type === 'markdown') {
+      const lines = body.split(/\r?\n/);
+      // The first line becomes the section heading, so repeating it verbatim
+      // in the body prints the same sentence twice. Markdown's own # markers
+      // go too: they mean nothing inside a MATLAB comment.
       parts.push(`%% ${firstLine(body)}`);
-      body.split(/\r?\n/).forEach((l) => parts.push(`% ${l}`.replace(/\s+$/, '')));
+      const rest = /^\s*#/.test(lines[0] || '') ? lines.slice(1) : lines;
+      rest.forEach((l) => parts.push(`% ${l.replace(/^#+\s*/, '')}`.replace(/\s+$/, '')));
     } else {
       parts.push(`%% Cell ${index + 1}`);
       parts.push(body);

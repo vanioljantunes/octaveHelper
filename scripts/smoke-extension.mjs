@@ -44,8 +44,10 @@ const run = async () => {
   process.stdout.write(`opening ${url}\n`);
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 });
 
-  const saveBtn = page.locator('button:has-text("Save .m")').first();
-  const openBtn = page.locator('button:has-text("Open .m")').first();
+  // JupyterLab 4 renders toolbar items as <jp-button> web components, not
+  // <button>, so match on the classes the extension sets instead.
+  const saveBtn = page.locator('.oh-save-m').first();
+  const openBtn = page.locator('.oh-open-m').first();
   let buttonsThere = false;
   try {
     await saveBtn.waitFor({ state: 'visible', timeout: 90000 });
