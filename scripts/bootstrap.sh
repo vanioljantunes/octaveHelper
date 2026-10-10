@@ -26,14 +26,18 @@ if [ ! -x "$TOOLS/micromamba" ]; then
 fi
 "$TOOLS/micromamba" --version
 
+# nodejs comes from conda-forge too, so the toolbar extension can be built
+# without a system node and without apt.
 if [ ! -x "$HOST/bin/python" ]; then
   echo "creating host python env"
-  "$TOOLS/micromamba" create -y -q -p "$HOST" -c conda-forge python=3.12 pip
+  "$TOOLS/micromamba" create -y -q -p "$HOST" -c conda-forge python=3.12 pip nodejs=22
 fi
 
-echo "installing jupyterlite"
+echo "installing jupyterlite and jupyterlab"
 "$HOST/bin/python" -m pip install --quiet --upgrade pip
-"$HOST/bin/python" -m pip install --quiet jupyterlite-core jupyterlite-xeus
+# jupyterlab provides `jupyter labextension build`, used for the toolbar extension.
+"$HOST/bin/python" -m pip install --quiet jupyterlite-core jupyterlite-xeus jupyterlab
 
-"$HOST/bin/python" -m pip list 2>/dev/null | grep -iE "jupyterlite|empack"
+"$HOST/bin/python" -m pip list 2>/dev/null | grep -iE "jupyterlite|jupyterlab |empack"
+"$HOST/bin/node" --version
 echo "bootstrap done; now run: bash scripts/build.sh"

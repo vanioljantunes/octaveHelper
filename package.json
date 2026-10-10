@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "description": "Edit and run MATLAB/Octave scripts in the browser, save them back as MATLAB-friendly .m files",
-  "type": "module",
   "scripts": {
     "test": "node --test test/matlabify.test.mjs",
     "bootstrap": "bash scripts/bootstrap.sh",

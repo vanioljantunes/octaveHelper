@@ -1,0 +1,38 @@
+/* The conversion report shown after Save .m */
+
+.oh-report {
+  max-width: 34rem;
+  font-size: var(--jp-ui-font-size1);
+  line-height: 1.5;
+}
+
+.oh-report__heading {
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 600;
+}
+
+.oh-report__heading:first-child {
+  margin-top: 0;
+}
+
+.oh-report__list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.oh-report__list li {
+  margin-bottom: 0.2rem;
+}
+
+.oh-report__line {
+  display: inline-block;
+  min-width: 4.5rem;
+  color: var(--jp-ui-font-color2);
+  font-family: var(--jp-code-font-family);
+  font-size: 0.9em;
+}
+
+/* Things the converter refused to change on its own read as warnings. */
+.oh-report__list--manual li {
+  color: var(--jp-warn-color0, #b8860b);
+}

@@ -1,6 +1,6 @@
 # octaveHelper: Octave notebook on the web
-Progress: 11/20 (55%)
-Started: 2026-10-09 23:40 BRT   Updated: 2026-10-10 02:05 BRT
+Progress: 13/26 (50%)
+Started: 2026-10-09 23:40 BRT   Updated: 2026-10-10 08:40 BRT
 
 ## Goal
 
@@ -34,15 +34,20 @@ converted, verified by screenshot at desktop and phone width.
 - [x] 9. First successful kernel build: kernel 150M, `_site` 238M, jupyterlab-plotly copied in
 - [x] 10. `scripts/smoke.mjs` - `disp(A * A)` prints `7 10 / 15 22` in a dedicated browser, 11.4s
 - [x] 11. `plot(1:10, (1:10).^2)` renders a plotly figure, 12.5s - the v1 gate, confirmed by screenshot
-- [~] 11b. Shrink the payload: `no_sourcemaps` + `no_unused_shared_packages` set, not yet rebuilt
+- [x] 11b. Shrink the payload: `no_sourcemaps` + `no_unused_shared_packages` took 238M to 190M, 529 files
+- [x] 11c. Establish the hosting constraint: Vercel account is Hobby, 100MB upload cap, 100GB/month
 - [ ] 12. Decide whether stdin needs COOP/COEP headers; set them in `vercel.json` only if so
-- [ ] 13. JupyterLab toolbar extension: "Save as .m (MATLAB)" calling `cellsToScript` (w=3)
-- [ ] 14. "Open .m" - upload a script, split on `%%` into cells (w=2)
-- [ ] 15. Conversion-notes panel: line number, rule, what changed or why it could not
-- [ ] 16. Brand the shell to Warm Editorial: title, favicon, accent, remove Jupyter chrome (w=2)
-- [ ] 17. CI: build on ubuntu, deploy `_site` to Vercel, since the output is too big to commit (w=2)
-- [ ] 18. Site repo: tool card, subnav entry in 4 pages, two `vercel.json` rewrites
-- [ ] 19. Screenshots at desktop and phone width, WCAG 2.2 AA pass
+- [~] 13. JupyterLab extension written: Save .m and Open .m toolbar buttons, conversion report dialog (w=3)
+- [ ] 13b. Compile it and wire the built labextension into the JupyterLite build
+- [ ] 13c. Browser test: Save .m downloads a converted file, Open .m splits a script into cells
+- [ ] 14. Operator step: Cloudflare account, R2 bucket, CORS rule, API token
+- [ ] 15. `scripts/upload-r2.sh` - push `kernel_packages/` and `bin/*.wasm` to R2 (w=2)
+- [ ] 16. `vercel.json` 308 redirects for those paths, so bytes bypass Vercel bandwidth
+- [ ] 17. Confirm the Vercel upload is under 100MB once the heavy assets are redirected
+- [ ] 18. Brand the shell to Warm Editorial: title, favicon, accent, trim Jupyter chrome (w=2)
+- [ ] 19. CI: build on ubuntu, upload to R2, deploy the shell to Vercel (w=2)
+- [ ] 20. Site repo: tool card, subnav entry in 4 pages, two `vercel.json` rewrites
+- [ ] 21. Screenshots at desktop and phone width, WCAG 2.2 AA pass
 
 ## Notes
 

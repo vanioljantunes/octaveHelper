@@ -1,0 +1,43 @@
+{
+  "name": "octavehelper-matlab-export",
+  "version": "0.1.0",
+  "description": "Open a .m script into a notebook, and save a notebook back as a MATLAB-friendly .m file",
+  "license": "GPL-3.0-only",
+  "private": true,
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension",
+    "octave",
+    "matlab"
+  ],
+  "files": [
+    "lib/**/*.{js,js.map,d.ts}",
+    "style/**/*.css"
+  ],
+  "main": "lib/extension/src/index.js",
+  "types": "lib/extension/src/index.d.ts",
+  "style": "style/index.css",
+  "scripts": {
+    "build": "tsc && jupyter labextension build --development True .",
+    "build:prod": "tsc && jupyter labextension build .",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^4.5.0",
+    "@jupyterlab/apputils": "^4.5.0",
+    "@jupyterlab/cells": "^4.5.0",
+    "@jupyterlab/docregistry": "^4.5.0",
+    "@jupyterlab/notebook": "^4.5.0",
+    "@lumino/disposable": "^2.1.0",
+    "@lumino/widgets": "^2.5.0"
+  },
+  "devDependencies": {
+    "@jupyter/builder": "^1.2.2",
+    "typescript": "~5.5.0"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "../labextensions/octavehelper-matlab-export"
+  }
+}

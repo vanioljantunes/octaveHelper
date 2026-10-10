@@ -18,3 +18,4 @@ shots/
 .vercel/
 
 node_modules/
+labextensions/

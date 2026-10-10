@@ -14,7 +14,7 @@ GNU Octave 10.3 compiled to WebAssembly, driven by the
 served through [JupyterLite](https://jupyterlite.readthedocs.io/), so the whole
 thing is static files. Plots render through the kernel's plotly toolkit.
 
-On top of that sits the part this repo actually writes: `src/matlabify.js`,
+On top of that sits the part this repo actually writes: `src/matlabify.mjs`,
 which turns Octave-flavoured source into source MATLAB accepts, and reports
 every difference it could not fix safely.
 

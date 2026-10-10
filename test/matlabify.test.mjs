@@ -1,7 +1,7 @@
 // Run with: node --test test/
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { matlabify, cellsToScript, toFileText } from '../src/matlabify.js';
+import { matlabify, cellsToScript, toFileText } from '../src/matlabify.mjs';
 
 const conv = (src) => matlabify(src).code;
 const rules = (src) => matlabify(src).notes.map((n) => n.rule);
