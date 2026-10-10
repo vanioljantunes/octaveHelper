@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+# Shell scripts run in WSL and in CI on Linux; CRLF breaks the shebang.
+*.sh text eol=lf
+
+*.png binary
