@@ -5,6 +5,19 @@
   "installCommand": null,
   "outputDirectory": "_site",
   "cleanUrls": false,
+  "_comment_redirects": "308s, not rewrites: the browser follows them to R2 itself, so these bytes never count against Vercel bandwidth. KERNEL_CDN_HOST is a placeholder until the bucket exists. Keep these two paths identical to the ones scripts/upload-r2.sh pushes.",
+  "redirects": [
+    {
+      "source": "/xeus/octave/kernel_packages/:file",
+      "destination": "https://KERNEL_CDN_HOST/xeus/octave/kernel_packages/:file",
+      "permanent": true
+    },
+    {
+      "source": "/xeus/octave/bin/:file(.*\\.wasm)",
+      "destination": "https://KERNEL_CDN_HOST/xeus/octave/bin/:file",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/xeus/(.*)",

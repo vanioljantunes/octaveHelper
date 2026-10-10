@@ -1,7 +1,8 @@
 {
   "LiteBuildConfig": {
     "no_sourcemaps": true,
-    "no_unused_shared_packages": true
+    "no_unused_shared_packages": true,
+    "contents": ["content"]
   },
   "XeusAddon": {
     "environment_file": "environment.yml"

@@ -1,0 +1,87 @@
+name: build and deploy
+
+# The build only works on Linux: the Octave conda packages contain symlinks
+# that Windows cannot create without elevation.
+#
+# The split deploy exists because the Vercel account is Hobby, which caps a
+# static deployment at 100MB while the Octave package alone is 102MB. The heavy
+# kernel assets go to Cloudflare R2, which charges nothing for egress, and
+# vercel.json 308-redirects to them. Vercel serves only the small app shell.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Conversion tests
+        run: npm test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # micromamba, the host python env and the node used for the extension
+      # are all created inside the repo by the bootstrap script.
+      - name: Cache the toolchain
+        uses: actions/cache@v4
+        with:
+          path: |
+            .tools
+            .host
+            .mamba
+          key: toolchain-${{ runner.os }}-${{ hashFiles('scripts/bootstrap.sh', 'environment.yml') }}
+
+      - name: Bootstrap
+        run: bash scripts/bootstrap.sh
+
+      - name: Build
+        run: bash scripts/build.sh
+
+      - name: Report payload
+        run: |
+          du -sh _site
+          du -sh _site/xeus
+          find _site -type f | wc -l
+
+      - name: Upload the kernel to R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: bash scripts/upload-r2.sh _site
+
+      # Whatever R2 now serves is removed from the Vercel upload, and the
+      # redirects in vercel.json point at it. This is what keeps the
+      # deployment under the 100MB Hobby cap.
+      - name: Drop the redirected assets from the deploy
+        run: |
+          rm -rf _site/xeus/octave/kernel_packages
+          find _site/xeus/octave/bin -name '*.wasm' -delete 2>/dev/null || true
+          echo "deploying $(du -sh _site | cut -f1) in $(find _site -type f | wc -l) files"
+          size_mb=$(du -sm _site | cut -f1)
+          if [ "$size_mb" -ge 100 ]; then
+            echo "::error::_site is ${size_mb}MB, at or over the 100MB Hobby cap"
+            exit 1
+          fi
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"

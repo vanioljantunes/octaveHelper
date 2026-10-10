@@ -33,6 +33,13 @@ if [ ! -x "$HOST/bin/python" ]; then
   "$TOOLS/micromamba" create -y -q -p "$HOST" -c conda-forge python=3.12 pip nodejs=22
 fi
 
+# Checked separately so an env created before node was a requirement still
+# gets it, rather than silently skipping the whole block above.
+if [ ! -x "$HOST/bin/node" ]; then
+  echo "adding nodejs to the host env"
+  "$TOOLS/micromamba" install -y -q -p "$HOST" -c conda-forge nodejs=22
+fi
+
 echo "installing jupyterlite and jupyterlab"
 "$HOST/bin/python" -m pip install --quiet --upgrade pip
 # jupyterlab provides `jupyter labextension build`, used for the toolbar extension.

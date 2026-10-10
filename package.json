@@ -6,7 +6,9 @@
   "scripts": {
     "test": "node --test test/matlabify.test.mjs",
     "bootstrap": "bash scripts/bootstrap.sh",
-    "build": "bash scripts/build.sh"
+    "build": "bash scripts/build.sh",
+    "smoke": "node scripts/smoke.mjs",
+    "smoke:extension": "node scripts/smoke-extension.mjs"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
